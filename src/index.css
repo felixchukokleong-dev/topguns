@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0c1117;
+  --color-ink-2: #101722;
+  --color-ink-3: #161f2e;
+  --color-line: #26344a;
+  --color-bone: #ede7da;
+  --color-steel: #8d99ac;
+  --color-flare: #ff4d1c;
+  --color-flare-2: #ff7a45;
+  --color-cash: #3ed598;
+  --color-amber: #ffb020;
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-flare);
+  color: var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border: 2px solid var(--color-ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-flare);
+}
+
+/* ---------- ambient layers ---------- */
+.bg-war-grid {
+  background-image: linear-gradient(rgba(141, 153, 172, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(141, 153, 172, 0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, black 35%, transparent 90%);
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-flare) 0 10px,
+    var(--color-ink) 10px 20px
+  );
+}
+
+/* ---------- motion signatures ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+.mask-line > .mask-inner {
+  display: block;
+  transform: translateY(115%);
+  transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.masks-in .mask-line > .mask-inner {
+  transform: translateY(0);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee 46s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.blink {
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+.ping-soft {
+  animation: ping-soft 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 28s linear infinite;
+}
+
+@keyframes tick-flash {
+  0% {
+    color: var(--color-cash);
+    text-shadow: 0 0 22px rgba(62, 213, 152, 0.55);
+  }
+  100% {
+    color: inherit;
+    text-shadow: none;
+  }
+}
+.tick-flash {
+  animation: tick-flash 0.9s ease-out;
+}
+
+.text-ghost {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(237, 231, 218, 0.14);
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .mask-line > .mask-inner {
+    transform: none !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
